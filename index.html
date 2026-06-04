@@ -5,125 +5,238 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>文化祭デジタルスタンプラリー</title>
     <style>
+        /* ==========================================
+           🎨 全体のデザイン（CSS）
+           ========================================== */
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
-            background-color: #f9f6f0;
-            color: #4a3f35;
-            margin: 0;
-            padding: 20px;
+            background-color: #f7f5f0;
+            color: #4a3b32;
             text-align: center;
+            padding: 20px;
+            margin: 0;
         }
         h1 {
-            color: #5d4a3a;
-            margin-bottom: 30px;
+            font-size: 24px;
+            margin-bottom: 5px;
         }
+        /* 進捗カウンター */
+        .counter {
+            font-size: 18px;
+            font-weight: bold;
+            background-color: #e6dfd3;
+            padding: 8px 20px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+        /* マップを見るボタン */
+        .map-btn {
+            background-color: #8b7d6b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 15px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-bottom: 15px;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        /* マップ画像の表示エリア */
+        .map-container {
+            display: none; /* 最初は隠しておく */
+            margin: 10px auto 20px auto;
+            max-width: 90%;
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .map-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+        /* 🎉 一番上に引っ越したコンプリート画面 */
+        #complete-area {
+            display: none; /* 条件をクリアするまでは隠す */
+            background-color: #fff3cd;
+            border: 2px dashed #ffc107;
+            padding: 15px;
+            border-radius: 12px;
+            margin: 15px auto;
+            max-width: 500px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .complete-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #856404;
+            margin: 0 0 8px 0;
+        }
+        /* スタンプカードのグリッド表示 */
         .grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            max-width: 500px;
-            margin: 0 auto 30px auto;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            max-width: 600px;
+            margin: 20px auto;
         }
-        .club-card {
+        .card {
+            background: white;
+            border: 2px solid #e6dfd3;
+            border-radius: 12px;
+            padding: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.03);
             text-align: center;
         }
-        .club-card img {
+        .card img {
             width: 100%;
             aspect-ratio: 1/1;
-            object-fit: contain;
-            background: white;
-            border: 2px solid #ddd;
-            border-radius: 15px;
-            transition: all 0.3s ease;
-            /* 💡 まだGETしていないスタンプは透明（非表示）になります */
-            opacity: 0; 
+            object-fit: cover;
+            border-radius: 8px;
+            opacity: 0.15; /* 💡 まだ未獲得の時は白っぽく透明にする */
+            transition: opacity 0.5s ease;
         }
-        /* 💡 スタンプをGETするとピカッと現れる設定 */
-        .club-card.unlocked img {
-            opacity: 1;
-            border-color: #ffaa00;
-            box-shadow: 0 4px 10px rgba(255,170,0,0.4);
+        .card.unlocked img {
+            opacity: 1; /* 💡 獲得したらハッキリ表示 */
         }
         .club-name {
-            margin-top: 5px;
+            margin-top: 8px;
+            font-size: 14px;
             font-weight: bold;
-            color: #4a3f35;
         }
-        .congrats {
-            display: none; /* 最初は隠しておきます */
-            text-align: center;
-            padding: 20px;
-            background: #fff3dd;
-            border-radius: 15px;
-            border: 2px dashed #ffaa00;
-            max-width: 500px;
-            margin: 30px auto 0 auto;
-        }
-        .congrats h2 {
-            color: #5d4a3a;
-            margin: 0 0 10px 0;
+        /* ⚠️ 開発用リセットボタン */
+        .debug-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            font-size: 13px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 50px;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
 
     <h1>🏫 文化祭デジタルスタンプラリー</h1>
+    <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">QRコードを読み込んでスタンプを集めよう！</p>
 
-    <div class="grid" id="stamp-grid"></div>
-
-    <div class="congrats" id="congrats-box">
-        <h2>🎊 コンプリートおめでとう！ 🎊</h2>
-        <p>この画面を景品交換所で見せてね！</p>
+    <button class="map-btn" onclick="toggleMap()">🗺️ 校内マップを見る / 閉じる</button>
+    <div id="map-area" class="map-container">
+        <img src="map.png" alt="校内マップ" onerror="this.style.display='none'; document.getElementById('map-fallback').style.display='block';">
+        <p id="map-fallback" style="display:none; margin:10px 0; font-size:13px; color:#888;">（ここに校内マップの画像が表示されます）</p>
     </div>
 
+    <br>
+
+    <div id="complete-area">
+        <p class="complete-title">🎉 条件クリア！おめでとう！ 🎁</p>
+        <p style="margin: 0; font-size: 14px; font-weight: bold; color: #4a3b32;">この画面を「景品交換所」で見せてね！</p>
+    </div>
+
+    <div class="counter">
+        あつまったスタンプ: <span id="current-count">0</span> / <span id="total-required">2</span> 個
+    </div>
+
+    <div class="grid" id="club-grid">
+        </div>
+
+    <button class="debug-btn" onclick="resetRally()">⚠️【開発用】スタンプをリセットする</button>
+
+
     <script>
-        // ==========================================
-        // 1. 💡 部活の設定（ここを増減させるだけ！）
-        // ==========================================
-        // 画像は同じフォルダにアップロードしたファイル名を書くだけでOK！
+        // --- ⚙️ 自分たちの文化祭に合わせてここを書き換えてね ⚙️ ---
+        
+        const REQUIRED_COUNT = 2; // 💡 景品をもらうために必要なスタンプの数（いまは2個にしています）
+
         const CLUBS = [
-            { id: "densanki", name: "電算機部", image: "densanki.png" },
-            { id: "science", name: "科学部", image: "science.png" }
+            { id: 'densanki', name: '電算機部', image: 'densanki.png' },
+            { id: 'science',  name: '科学部',   image: 'science.png' },
+            { id: 'housou', name: '放送部', image: 'housou.png' },
+            { id: 'mokei', name: '模型・ジオラマ部', image: 'mokei.png' },
+            { id: 'sadou', name: '茶道部', image: 'sadou.png' },
+            { id: 'kadou', name: '華道部', image: 'kadou.png' },
+            { id: 'bijutu', name: '美術部', image: 'bijutu.png' },
+            { id: 'syasin', name: '写真部', image: 'syasin.png' },
+            { id: 'syodou', name: '書道部', image: 'syodou.png' },
+            { id: '', name: '', image: '.png' },
+            { id: '', name: '', image: '.png' },
         ];
 
-        const STORAGE_KEY = "bunkasai_github_rally_v3";
+        const STORAGE_KEY = 'bunkasai_github_rally_v3'; // スマホに記憶させるための合言葉
 
-        // 2. ブラウザの記憶（LocalStorage）からデータを読み込む
-        let stampStatus = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+
+        // --- 🛠️ ここから下は自動で動くので触らなくてOKです ---
+
+        // 必要数を画面にセット
+        document.getElementById('total-required').innerText = REQUIRED_COUNT;
+
+        // スマホの記憶を読み込む
+        let savedData = localStorage.getItem(STORAGE_KEY);
+        let stampStatus = savedData ? JSON.parse(savedData) : {};
+
+        // データを初期化（まだ持ってない部活はすべて未獲得にする）
         CLUBS.forEach(club => {
             if (stampStatus[club.id] === undefined) {
                 stampStatus[club.id] = false;
             }
         });
 
-        // 3. QRコードのURLパラメータ（?spot=xxx）をチェック
+        // URLに「?spot=部活ID」がついているかチェックして、スタンプを押す
         const urlParams = new URLSearchParams(window.location.search);
-        const spot = urlParams.get('spot');
-        if (spot && stampStatus.hasOwnProperty(spot)) {
-            stampStatus[spot] = true;
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(stampStatus));
+        const currentSpot = urlParams.get('spot');
+
+        if (currentSpot && stampStatus[currentSpot] !== undefined) {
+            stampStatus[currentSpot] = true;
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(stampStatus)); // 記憶を保存
         }
 
-        // 4. 画面にスタンプカードを組み立てて表示する
-        const gridEl = document.getElementById("stamp-grid");
-        let allCompleted = true;
+        // 現在何個集まっているか計算
+        let currentCount = 0;
+        CLUBS.forEach(club => {
+            if (stampStatus[club.id] === true) {
+                currentCount++;
+            }
+        });
+        document.getElementById('current-count').innerText = currentCount;
 
+        // 必要数を超えていたら、一番上のコンプリート画面を表示
+        if (currentCount >= REQUIRED_COUNT) {
+            document.getElementById('complete-area').style.display = 'block';
+        }
+
+        // 画面にカードを組み立てて表示
+        const gridContainer = document.getElementById('club-grid');
         CLUBS.forEach(club => {
             const isUnlocked = stampStatus[club.id];
-            if (!isUnlocked) allCompleted = false; // 1つでも未GETがあればコンプではない
-
-            const card = document.createElement("div");
-            card.className = `club-card ${isUnlocked ? 'unlocked' : ''}`;
-            card.innerHTML = `
-                <img src="${club.image}" alt="${club.name}">
-                <div class="club-name">${club.name}</div>
+            const cardHtml = `
+                <div class="card ${isUnlocked ? 'unlocked' : ''}">
+                    <img src="${club.image}" alt="${club.name}">
+                    <div class="club-name">${club.name}</div>
+                </div>
             `;
-            gridEl.appendChild(card);
+            gridContainer.innerHTML += cardHtml;
         });
 
-        // 5. すべて集め終わっていたらコンプリート画面を出す
-        if (allCompleted) {
-            document.getElementById("congrats-box").style.display = "block";
+        // マップの表示・非表示を切り替えるボタンの処理
+        function toggleMap() {
+            const mapArea = document.getElementById('map-area');
+            if (mapArea.style.display === 'block') {
+                mapArea.style.display = 'none';
+            } else {
+                mapArea.style.display = 'block';
+            }
+        }
+
+        // 開発用のリセット処理
+        function resetRally() {
+            localStorage.removeItem(STORAGE_KEY);
+            window.location.href = window.location.pathname; // URLのおまけを消してリロード
         }
     </script>
 </body>
