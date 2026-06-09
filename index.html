@@ -45,7 +45,7 @@
         }
         /* マップ画像の表示エリア */
         .map-container {
-            display: none; /* 最初は隠しておく */
+            display: none;
             margin: 10px auto 20px auto;
             max-width: 90%;
             background: white;
@@ -58,9 +58,9 @@
             height: auto;
             border-radius: 5px;
         }
-        /* 🎉 一番上に引っ越したコンプリート画面 */
+        /* 🎉 一番上にあるコンプリート画面 */
         #complete-area {
-            display: none; /* 条件をクリアするまでは隠す */
+            display: none;
             background-color: #fff3cd;
             border: 2px dashed #ffc107;
             padding: 15px;
@@ -96,16 +96,22 @@
             aspect-ratio: 1/1;
             object-fit: cover;
             border-radius: 8px;
-            opacity: 0.15; /* 💡 まだ未獲得の時は白っぽく透明にする */
+            opacity: 0.15;
             transition: opacity 0.5s ease;
         }
         .card.unlocked img {
-            opacity: 1; /* 💡 獲得したらハッキリ表示 */
+            opacity: 1;
         }
         .club-name {
             margin-top: 8px;
             font-size: 14px;
             font-weight: bold;
+        }
+        /* 📍 場所の文字デザイン（黒色にしました！） */
+        .club-location {
+            margin-top: 4px;
+            font-size: 11px;
+            color: #4a3b32; /* しっかり見える文字色に修正 */
         }
         /* ⚠️ 開発用リセットボタン */
         .debug-btn {
@@ -124,7 +130,7 @@
 <body>
 
     <h1>🏫 文化祭デジタルスタンプラリー</h1>
-    <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">QRコードを読み込んでスタンプを集めよう！</p>
+    <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">QRコードを読み込んでスタンプを開放しよう！</p>
 
     <button class="map-btn" onclick="toggleMap()">🗺️ 校内マップを見る / 閉じる</button>
     <div id="map-area" class="map-container">
@@ -140,7 +146,7 @@
     </div>
 
     <div class="counter">
-        あつまったスタンプ: <span id="current-count">0</span> / <span id="total-required">2</span> 個
+        <span id="counter-label">景品獲得まで</span>: <span id="current-count">0</span> / <span id="total-target">0</span> 個
     </div>
 
     <div class="grid" id="club-grid">
@@ -152,24 +158,26 @@
     <script>
         // --- ⚙️ 自分たちの文化祭に合わせてここを書き換えてね ⚙️ ---
         
-        const REQUIRED_COUNT = 5; // 💡 景品をもらうために必要なスタンプの数（いまは5個にしています）
+        const REQUIRED_COUNT = 3; // 💡 景品獲得に必要なスタンプの数
 
         const CLUBS = [
-            { id: 'densanki', name: '電算機部', image: 'densanki.png' },
-            { id: 'science',  name: '科学部',   image: 'science.png' },
-            { id: 'housou', name: '放送部', image: 'housou.png' },
-            { id: 'mokei', name: '模型・ジオラマ部', image: 'mokei.png' },
-            { id: 'sadou', name: '茶道部', image: 'sadou.png' },
-            { id: 'kadou', name: '華道部', image: 'kadou.png' },
-            { id: 'seitokai', name: '生徒会執行部', image: 'seitokai.png' },
-            { id: 'bijutu', name: '美術部', image: 'bijutu.png' },
-            { id: 'syasin', name: '写真部', image: 'syasin.png' },
-            { id: 'syodou', name: '書道部', image: 'syodou.png' },
-            { id: 'gassyou', name: '合唱部', image: 'gassyou.png' },
-            { id: 'soukyoku', name: '箏曲部', image: 'soukyoku.png' },
-            { id: 'suisougaku', name: '吹奏楽部', image: 'suisougaku.png' },
-            { id: '', name: '', image: '.png' },
-            { id: '', name: '', image: '.png' },
+            { id: 'densanki', name: '電算機部', image: 'densanki.png', location: '中館３階' },
+            { id: 'science',  name: '科学部',   image: 'science.png' ,  location: '北館１階' },
+            { id: 'housou', name: '放送部', image: 'housou.png' ,  location: '南館１階' },
+            { id: 'mokei', name: '模型・ジオラマ部', image: 'mokei.png' ,  location: '北館４階' },
+            { id: 'sadou', name: '茶道部', image: 'sadou.png'  ,  location: '北館３階' },
+            { id: 'kadou', name: '華道部', image: 'kadou.png' ,  location: '南館２階' },
+            { id: 'seitokai', name: '生徒会執行部', image: 'seitokai.png' ,  location: '中館３階' },
+            { id: 'bijutu', name: '美術部', image: 'bijutu.png',  location: '北館５階' },
+            { id: 'syasin', name: '写真部', image: 'syasin.png' ,  location: '北館３階' },
+            { id: 'syodou', name: '書道部', image: 'syodou.png',  location: '北館５階' },
+            { id: 'ess', name: 'ESS部', image: 'ess.png',  location: '中館４階' },
+            { id: 'gassyou', name: '合唱部', image: 'gassyou.png',  location: '体育館入口' },
+            { id: 'soukyoku', name: '箏曲部', image: 'soukyoku.png',  location: '体育館入口' },
+            { id: 'suisougaku', name: '吹奏楽部', image: 'suisougaku.png',  location: '体育館入口' },
+            { id: 'engeki', name: '演劇部', image: 'engeki.png',  location: '体育館入口' },
+            
+            
         ];
 
         const STORAGE_KEY = 'bunkasai_github_rally_v3'; // スマホに記憶させるための合言葉
@@ -177,30 +185,24 @@
 
         // --- 🛠️ ここから下は自動で動くので触らなくてOKです ---
 
-        // 必要数を画面にセット
-        document.getElementById('total-required').innerText = REQUIRED_COUNT;
-
-        // スマホの記憶を読み込む
         let savedData = localStorage.getItem(STORAGE_KEY);
         let stampStatus = savedData ? JSON.parse(savedData) : {};
 
-        // データを初期化（まだ持ってない部活はすべて未獲得にする）
         CLUBS.forEach(club => {
             if (stampStatus[club.id] === undefined) {
                 stampStatus[club.id] = false;
             }
         });
 
-        // URLに「?spot=部活ID」がついているかチェックして、スタンプを押す
         const urlParams = new URLSearchParams(window.location.search);
         const currentSpot = urlParams.get('spot');
 
         if (currentSpot && stampStatus[currentSpot] !== undefined) {
             stampStatus[currentSpot] = true;
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(stampStatus)); // 記憶を保存
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(stampStatus));
         }
 
-        // 現在何個集まっているか計算
+        // 現在の獲得数を計算
         let currentCount = 0;
         CLUBS.forEach(club => {
             if (stampStatus[club.id] === true) {
@@ -209,9 +211,19 @@
         });
         document.getElementById('current-count').innerText = currentCount;
 
-        // 必要数を超えていたら、一番上のコンプリート画面を表示
+        // 💡 【新機能】スタンプの数に合わせてカウンターの文字と分母を切り替える
+        const counterLabel = document.getElementById('counter-label');
+        const totalTarget = document.getElementById('total-target');
+
         if (currentCount >= REQUIRED_COUNT) {
-            document.getElementById('complete-area').style.display = 'block';
+            // 景品数を達成したら、目標を「全部の部活の数（CLUBS.length）」に切り替える
+            counterLabel.innerText = "コンプリートまで";
+            totalTarget.innerText = CLUBS.length; 
+            document.getElementById('complete-area').style.display = 'block'; // 景品画面を表示
+        } else {
+            // まだ達成していない時は「景品獲得まで：○ / 必要数」
+            counterLabel.innerText = "景品獲得まで";
+            totalTarget.innerText = REQUIRED_COUNT;
         }
 
         // 画面にカードを組み立てて表示
@@ -222,12 +234,12 @@
                 <div class="card ${isUnlocked ? 'unlocked' : ''}">
                     <img src="${club.image}" alt="${club.name}">
                     <div class="club-name">${club.name}</div>
+                    <div class="club-location">📍 ${club.location}</div>
                 </div>
             `;
             gridContainer.innerHTML += cardHtml;
         });
 
-        // マップの表示・非表示を切り替えるボタンの処理
         function toggleMap() {
             const mapArea = document.getElementById('map-area');
             if (mapArea.style.display === 'block') {
@@ -237,10 +249,9 @@
             }
         }
 
-        // 開発用のリセット処理
         function resetRally() {
             localStorage.removeItem(STORAGE_KEY);
-            window.location.href = window.location.pathname; // URLのおまけを消してリロード
+            window.location.href = window.location.pathname;
         }
     </script>
 </body>
