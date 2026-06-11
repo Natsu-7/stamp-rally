@@ -53,9 +53,11 @@
             border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
+        /* 🗺️ マップ画像を枠に収める設定 */
         .map-container img {
             width: 100%;
-            height: auto;
+            max-height: 350px;   /* 💡 縦に長くなりすぎないように「最大の高さ」を制限！ */
+            object-fit: contain; /* 💡 地図の全体が、絶対に切れることなく枠に収まるプロの技 */
             border-radius: 5px;
         }
         /* 🎉 一番上にあるコンプリート画面 */
@@ -90,7 +92,6 @@
             padding: 10px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.03);
             text-align: center;
-            /* 💡 スクロールした時に綺麗に収まるための設定 */
             scroll-margin: 100px; 
         }
         .card img {
@@ -152,7 +153,7 @@
     </div>
 
     <div class="grid" id="club-grid">
-        </div>
+    </div>
 
     <button class="debug-btn" onclick="resetRally()">⚠️【開発用】スタンプをリセットする</button>
 
@@ -179,8 +180,7 @@
             { id: 'soukyoku', name: '箏曲部', image: 'soukyoku.png',  location: '体育館入口' },
             { id: 'suisougaku', name: '吹奏楽部', image: 'suisougaku.png',  location: '体育館入口' },
             { id: 'engeki', name: '演劇部', image: 'engeki.png',  location: '体育館入口' },
-            { id: 'jrc' , name: 'JRC部' , image: 'jrc.png' , location: '中館靴箱前'}
-
+            { id: 'jrc' , name: 'JRC部' , image: 'jrc.png' , location: '中館靴箱前' }
         ];
 
         const STORAGE_KEY = 'bunkasai_github_rally_v3'; // スマホに記憶させるための合言葉
@@ -227,7 +227,7 @@
             totalTarget.innerText = REQUIRED_COUNT;
         }
 
-        // 画面にカードを組み立てて表示（自動スクロール用に card-${club.id} というIDを付与しました）
+        // 画面にカードを組み立てて表示
         const gridContainer = document.getElementById('club-grid');
         CLUBS.forEach(club => {
             const isUnlocked = stampStatus[club.id];
@@ -241,9 +241,7 @@
             gridContainer.innerHTML += cardHtml;
         });
 
-        // 💡 【新機能】QRコードで読み込まれた部活の位置まで自動で滑らかにスクロール
         if (currentSpot && stampStatus[currentSpot] !== undefined) {
-            // ページが開いてから0.3秒後にスクロールを実行（一瞬待つことで確実に動かします）
             setTimeout(() => {
                 const targetCard = document.getElementById(`card-${currentSpot}`);
                 if (targetCard) {
