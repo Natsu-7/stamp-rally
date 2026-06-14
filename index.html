@@ -154,7 +154,7 @@
 <body>
 
     <h1>🏫 たちばな祭スタンプラリー</h1>
-    <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">様々な場所にあるQRコードを読み込んでスタンプを開放しよう！<br>スタンプは文化部の展示場所か体育館にあるよ♪<br>３つ集めたら景品があるよ！集めたら電算機部まで来てね〜</p>
+    <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">様々な場所にあるQRコードを読み込んでスタンプを開放しよう！<br>スタンプは文化部の展示場所か体育館にあります♪<br>３つ集めたら景品があります！集めたら電算機部まで来てくださいね〜</p>
 
     <button class="map-btn" onclick="toggleMap()">🗺️ 校内マップを見る / 閉じる</button>
     <div id="map-area" class="map-container">
@@ -248,12 +248,16 @@
         // カウンターの切り替え処理
         const counterLabel = document.getElementById('counter-label');
         const totalTarget = document.getElementById('total-target');
-
+       
         if (currentCount >= REQUIRED_COUNT) {
             counterLabel.innerText = "コンプリートまで";
             totalTarget.innerText = CLUBS.length; 
             document.getElementById('complete-area').style.display = 'block';
-            document.getElementById('complete-area').classList.add('rainbow-border'); // 🌈 虹色クラスを追加！
+
+            // 🌈 3個のときは光らせず、全部（17個）集まったときだけ虹色にする！
+            if (currentCount === CLUBS.length) {
+                document.getElementById('complete-area').classList.add('rainbow-border');
+            }
         } else {
             counterLabel.innerText = "景品獲得まで";
             totalTarget.innerText = REQUIRED_COUNT;
