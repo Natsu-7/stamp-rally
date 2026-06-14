@@ -19,6 +19,9 @@
             padding: 20px;
             margin: 0;
         }
+
+        <div id="perfect-overlay">✨ PERFECT !! ✨</div>
+        
         h1 {
             font-size: 24px;
             margin-bottom: 5px;
@@ -149,6 +152,36 @@
             border-style: solid; /* 点線を実線にする */
             border-width: 4px; /* ボーダーを太くする */
         }
+
+        /* 🎉 PERFECT文字のデコレーション */
+        #perfect-overlay {
+            display: none; /* 最初は隠しておく */
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            font-size: min(12vw, 60px); /* スマホ画面に合わせたデカいサイズ */
+            font-weight: bold;
+            color: #ff3366;
+            text-shadow: 0 0 10px #fff, 0 0 20px #ffcc00, 0 0 30px #ff9900;
+            z-index: 9999; /* 一番手前に表示 */
+            pointer-events: none; /* 画面タッチの邪魔をしない */
+            white-space: nowrap;
+        }
+
+        /* 🎉 文字をドカンと飛び出させるスイッチ */
+        .pop-perfect {
+            display: block !important;
+            animation: blast-text 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes blast-text {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+            50% { transform: translate(-50%, -50%) scale(1.4); opacity: 1; }
+            70% { transform: translate(-50%, -50%) scale(0.9); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+        
     </style>
 </head>
 <body>
@@ -257,6 +290,9 @@
             // 🌈 3個のときは光らせず、全部（17個）集まったときだけ虹色にする！
             if (currentCount === CLUBS.length) {
                 document.getElementById('complete-area').classList.add('rainbow-border');
+                
+                // ⭐【追加】文字をドカンと飛び出させる！
+                document.getElementById('perfect-overlay').classList.add('pop-perfect');
             }
         } else {
             counterLabel.innerText = "景品獲得まで";
@@ -299,36 +335,57 @@
             }
         }
 
-        // 💡 画面の準備ができたらクラッカーをハジけさせる
+        // 💡 【新機能】条件に合わせたクラッカーの打ち分け判定
+        let launchNormalConfetti = false;
+        let launchSpecialConfetti = false;
+        let launchPerfectConfetti = false; // 🎆パーフェクト用を追加
+
+        if (isNewStamp) {
+            if (currentCount === CLUBS.length) {
+                launchPerfectConfetti = true; // 🎆全部集まった瞬間！
+            } else if (previousCount < REQUIRED_COUNT && currentCount >= REQUIRED_COUNT) {
+                launchSpecialConfetti = true;
+            } else {
+                launchNormalConfetti = true;
+            }
+        }
+
+        // 💡 画面の準備ができたらクラッカーや花火をハジけさせる
         window.addEventListener('DOMContentLoaded', () => {
-            if (launchSpecialConfetti) {
+            if (launchPerfectConfetti) {
+                // 🎆【1番案】連発花火（ランダムな位置から5秒間ドカン！ドカン！）
+                const duration = 5 * 1000; // 5秒間
+                const animationEnd = Date.now() + duration;
+                const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9998 };
+
+                function randomInRange(min, max) {
+                    return Math.random() * (max - min) + min;
+                }
+
+                const interval = setInterval(function() {
+                    const timeLeft = animationEnd - Date.now();
+                    if (timeLeft <= 0) return clearInterval(interval);
+
+                    const particleCount = 50 * (timeLeft / duration);
+                    
+                    // 画面のあちこちから交互に花火がドカン！
+                    confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.4), y: Math.random() - 0.2 } }));
+                    confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.6, 0.9), y: Math.random() - 0.2 } }));
+                }, 250); // 0.25秒おきに連発
+
+            } else if (launchSpecialConfetti) {
+                // 🎁 景品獲得の通常大クラッカー（左右から3秒間ブワブワ吹き出す！）
                 const duration = 3 * 1000;
                 const end = Date.now() + duration;
 
                 (function frame() {
-                    confetti({
-                        particleCount: 3,
-                        angle: 60,
-                        spread: 55,
-                        origin: { x: 0, y: 0.8 }
-                    });
-                    confetti({
-                        particleCount: 3,
-                        angle: 120,
-                        spread: 55,
-                        origin: { x: 1, y: 0.8 }
-                    });
-
-                    if (Date.now() < end) {
-                        requestAnimationFrame(frame);
-                    }
+                    confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0, y: 0.8 } });
+                    confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1, y: 0.8 } });
+                    if (Date.now() < end) requestAnimationFrame(frame);
                 }());
             } else if (launchNormalConfetti) {
-                confetti({
-                    particleCount: 80,
-                    spread: 60,
-                    origin: { y: 0.6 }
-                });
+                // 📍 通常のスタンプ獲得（真ん中からポンッ！）
+                confetti({ particleCount: 80, spread: 60, origin: { y: 0.6 } });
             }
         });
 
