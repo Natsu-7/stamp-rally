@@ -131,7 +131,7 @@
             margin-top: 50px;
             font-weight: bold;
         }
-        /* 🎉 虹色に光るアニメーション（追加） */
+        /* 🎉 虹色に光るアニメーション */
         @keyframes rainbow-glow {
             0% { border-color: #ff0000; box-shadow: 0 0 15px #ff0000; }
             14% { border-color: #ff7f00; box-shadow: 0 0 15px #ff7f00; }
@@ -139,11 +139,11 @@
             42% { border-color: #00ff00; box-shadow: 0 0 15px #00ff00; }
             57% { border-color: #0000ff; box-shadow: 0 0 15px #0000ff; }
             71% { border-color: #4b0082; box-shadow: 0 0 15px #4b0082; }
-  0% { border-color: #9400d3; box-shadow: 0 0 15px #9400d3; }
+            85% { border-color: #9400d3; box-shadow: 0 0 15px #9400d3; }
             100% { border-color: #ff0000; box-shadow: 0 0 15px #ff0000; }
         }
 
-        /* 🎉 虹色に光らせるCSSクラス（追加） */
+        /* 🎉 虹色に光らせるCSSクラス */
         .rainbow-border {
             animation: rainbow-glow 4s linear infinite; /* 4秒かけて虹色を繰り返す */
             border-style: solid; /* 点線を実線にする */
@@ -253,23 +253,7 @@
             counterLabel.innerText = "コンプリートまで";
             totalTarget.innerText = CLUBS.length; 
             document.getElementById('complete-area').style.display = 'block';
-
-            // カウンターの切り替え処理
-        const counterLabel = document.getElementById('counter-label');
-        const totalTarget = document.getElementById('total-target');
-
-        if (currentCount >= REQUIRED_COUNT) {
-            counterLabel.innerText = "コンプリートまで";
-            totalTarget.innerText = CLUBS.length; 
-            document.getElementById('complete-area').style.display = 'block';
-
-            document.getElementById('complete-area').classList.add('rainbow-border');
-
-        } else {
-            counterLabel.innerText = "景品獲得まで";
-            totalTarget.innerText = REQUIRED_COUNT;
-        }
-            
+            document.getElementById('complete-area').classList.add('rainbow-border'); // 🌈 虹色クラスを追加！
         } else {
             counterLabel.innerText = "景品獲得まで";
             totalTarget.innerText = REQUIRED_COUNT;
@@ -304,12 +288,9 @@
         let launchSpecialConfetti = false;
 
         if (isNewStamp) {
-            // 今回新しくスタンプをゲットした時だけ実行
             if (previousCount < REQUIRED_COUNT && currentCount >= REQUIRED_COUNT) {
-                // 3個集まって、景品獲得条件を「今ちょうど」クリアした瞬間！
                 launchSpecialConfetti = true;
             } else {
-                // 普通に新しいスタンプをゲットした時
                 launchNormalConfetti = true;
             }
         }
@@ -317,7 +298,6 @@
         // 💡 画面の準備ができたらクラッカーをハジけさせる
         window.addEventListener('DOMContentLoaded', () => {
             if (launchSpecialConfetti) {
-                // 🎁 景品獲得の大クラッカー（左右から3秒間ブワブワ吹き出す！）
                 const duration = 3 * 1000;
                 const end = Date.now() + duration;
 
@@ -340,7 +320,6 @@
                     }
                 }());
             } else if (launchNormalConfetti) {
-                // 📍 通常のスタンプ獲得（真ん中からポンッ！）
                 confetti({
                     particleCount: 80,
                     spread: 60,
