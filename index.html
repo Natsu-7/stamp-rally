@@ -19,8 +19,6 @@
             padding: 20px;
             margin: 0;
         }
-
-        <div id="perfect-overlay">✨ PERFECT !! ✨</div>
         
         h1 {
             font-size: 24px;
@@ -186,6 +184,8 @@
 </head>
 <body>
 
+    <div id="perfect-overlay">✨ PERFECT !! ✨</div>
+
     <h1>🏫 たちばな祭スタンプラリー</h1>
     <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">様々な場所にあるQRコードを読み込んでスタンプを開放しよう！<br>スタンプは文化部の展示場所か体育館にあります♪<br>３つ集めたら景品があります！集めたら電算機部まで来てくださいね〜</p>
 
@@ -321,18 +321,6 @@
                     targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
             }, 300);
-        }
-
-        // 💡 【新機能】条件に合わせたクラッカーの打ち分け判定
-        let launchNormalConfetti = false;
-        let launchSpecialConfetti = false;
-
-        if (isNewStamp) {
-            if (previousCount < REQUIRED_COUNT && currentCount >= REQUIRED_COUNT) {
-                launchSpecialConfetti = true;
-            } else {
-                launchNormalConfetti = true;
-            }
         }
 
         // 💡 【新機能】条件に合わせたクラッカーの打ち分け判定
