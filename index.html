@@ -213,6 +213,7 @@
             100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
         }
         
+        
     </style>
 </head>
 <body>
@@ -245,8 +246,7 @@
     <div class="grid" id="club-grid">
     </div>
 
-    <button class="debug-btn" onclick="resetRally()">⚠️【開発用】スタンプをリセットする</button>
-
+    <button id="debug-box" class="debug-btn" style="display: none;" onclick="resetRally()">⚠️【開発用】スタンプをリセットする</button>
 
     <script>
         // --- ⚙️ 自分たちの文化祭に合わせてここを書き換えてね ⚙️ ---
@@ -435,6 +435,10 @@
         function resetRally() {
             localStorage.removeItem(STORAGE_KEY);
             window.location.href = window.location.pathname;
+        }
+
+        if (urlParams.get('mode') === 'admin') {
+            document.getElementById('debug-box').style.display = 'inline-block';
         }
     </script>
 </body>
