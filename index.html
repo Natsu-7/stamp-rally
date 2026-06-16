@@ -224,7 +224,7 @@
     </div>
 
     <h1>🏫 たちばな祭スタンプラリー</h1>
-    <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">様々な場所にあるQRコードを読み込んでスタンプを開放しよう！<br>スタンプは文化部の展示場所か体育館にあります♪<br>３つ集めたら景品があります！集めたら電算機部まで来てくださいね〜</p>
+    <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">様々な場所にあるQRコードを読み込んでスタンプを開放しよう！<br>スタンプは文化部の展示場所か体育館にあります♪<br>３つ以上集めたら段階ごとに景品があります！<br>ヒントは演出！</p>
 
     <button class="map-btn" onclick="toggleMap()">🗺️ 校内マップを見る / 閉じる</button>
     <div id="map-area" class="map-container">
@@ -236,7 +236,7 @@
 
     <div id="complete-area">
         <p class="complete-title">🎉 条件クリア！おめでとうございます！ 🎁</p>
-        <p style="margin: 0; font-size: 14px; font-weight: bold; color: #4a3b32;">この画面を「電算機部（中館３階第２情報教室）」で見せてください！<br>（もっと多く集めると景品が多くなるかも！？ヒントは出る紙吹雪の量！）</p>
+        <p style="margin: 0; font-size: 14px; font-weight: bold; color: #4a3b32;">この画面を「電算機部（中館３階第２情報教室）」で見せてください！<br>（もっと多く集めると景品が多くなるかも！？ヒントは紙吹雪などの演出！もちろんパーフェクトしたら...）</p>
     </div>
 
     <div class="counter">
@@ -371,6 +371,8 @@
             if (currentCount === CLUBS.length) {
                 launchPerfectConfetti = true; // 🎆全部集まった瞬間！
             } else if (previousCount < REQUIRED_COUNT && currentCount >= REQUIRED_COUNT) {
+                launchSpecialConfetti = true;
+            } else if (previousCount < 10 && currentCount >= 10) {
                 launchSpecialConfetti = true;
             } else {
                 launchNormalConfetti = true;
