@@ -236,7 +236,7 @@
 
     <div id="complete-area">
         <p class="complete-title">🎉 条件クリア！おめでとうございます！ 🎁</p>
-        <p style="margin: 0; font-size: 14px; font-weight: bold; color: #4a3b32;">この画面を「電算機部（中館３階第２情報教室）」で見せてください！<br>（もっと多く集めると景品が多くなる！？）</p>
+        <p id="complete-message" style="margin: 0; font-size: 14px; font-weight: bold; color: #4a3b32;">この画面を「電算機部（中館３階第２情報教室）」で見せてください！</p>
     </div>
 
     <div class="counter">
@@ -314,28 +314,46 @@
         });
         document.getElementById('current-count').innerText = currentCount;
 
-        // カウンターの切り替え処理
+        // ===================================================
+        // ⚙️ カウンターと案内エリアの切り替え処理
+        // ===================================================
         const counterLabel = document.getElementById('counter-label');
         const totalTarget = document.getElementById('total-target');
+        const completeArea = document.getElementById('complete-area');
+        const completeMessage = document.getElementById('complete-message');
        
-        if (currentCount >= REQUIRED_COUNT) {
-            counterLabel.innerText = "コンプリートまで";
+        if (currentCount === CLUBS.length) {
+            // 🌈 17個フルコンプリート
+            counterLabel.innerText = "フルコンプリート！";
             totalTarget.innerText = CLUBS.length; 
-            document.getElementById('complete-area').style.display = 'block';
-
-            // 🌈 3個のときは光らせず、全部（17個）集まったときだけ虹色にする！
-            if (currentCount === CLUBS.length) {
-                document.getElementById('complete-area').classList.add('rainbow-border');
-                
-                // ⭐ 全消しの瞬間なら、ポップアップ画面を表示する
-                if (isNewStamp) {
-                    document.getElementById('perfect-screen').classList.add('pop-perfect-screen');
-                    document.getElementById('perfect-text').classList.add('pop-perfect-text');
-                }
+            completeArea.style.display = 'block';
+            completeArea.querySelector('.complete-title').innerText = "🎉 全17個フルコンプリート！おめでとう！ 🎁";
+            completeMessage.innerHTML = "電算機部で【最後の特別な景品】をもらってください！✨";
+            completeArea.classList.add('rainbow-border');
+            
+            if (isNewStamp) {
+                document.getElementById('perfect-screen').classList.add('pop-perfect-screen');
+                document.getElementById('perfect-text').classList.add('pop-perfect-text');
             }
+        } else if (currentCount >= 9) {
+            // 🥈 9個以上獲得時
+            counterLabel.innerText = "フルコンプまで";
+            totalTarget.innerText = CLUBS.length;
+            completeArea.style.display = 'block';
+            completeArea.querySelector('.complete-title').innerText = "🎉 9個達成！2つ目の景品ゲット！ 🎁";
+            completeMessage.innerHTML = "電算機部で2つ目の景品をもらってね！次は17個でフルコンプ！";
+        } else if (currentCount >= REQUIRED_COUNT) {
+            // 🥉 3個以上獲得時
+            counterLabel.innerText = "次の景品(9個)まで";
+            totalTarget.innerText = 9;
+            completeArea.style.display = 'block';
+            completeArea.querySelector('.complete-title').innerText = "🎉 3個達成！1つ目の景品ゲット！ 🎁";
+            completeMessage.innerHTML = "電算機部で1つ目の景品をもらってね！次は9個でさらに景品追加！";
         } else {
+            // 0〜2個のとき
             counterLabel.innerText = "景品獲得まで";
             totalTarget.innerText = REQUIRED_COUNT;
+            completeArea.style.display = 'none';
         }
 
         // 画面にカードを組み立てて表示
