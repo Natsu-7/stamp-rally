@@ -328,7 +328,7 @@
             totalTarget.innerText = CLUBS.length; 
             completeArea.style.display = 'block';
             completeArea.querySelector('.complete-title').innerText = "🎉 全17個フルコンプリート！おめでとう！ 🎁";
-            completeMessage.innerHTML = "電算機部で【最後の特別な景品】をもらってください！✨";
+            completeMessage.innerHTML = "電算機部で忘れずに景品をもらってください！✨";
             completeArea.classList.add('rainbow-border');
             
             if (isNewStamp) {
@@ -341,14 +341,14 @@
             totalTarget.innerText = CLUBS.length;
             completeArea.style.display = 'block';
             completeArea.querySelector('.complete-title').innerText = "🎉 9個達成！2つ目の景品ゲット！ 🎁";
-            completeMessage.innerHTML = "電算機部で2つ目の景品をもらってね！次は17個でフルコンプ！";
+            completeMessage.innerHTML = "電算機部で景品をもらってね！次は17個でフルコンプ！";
         } else if (currentCount >= REQUIRED_COUNT) {
             // 🥉 3個以上獲得時
             counterLabel.innerText = "次の景品(9個)まで";
             totalTarget.innerText = 9;
             completeArea.style.display = 'block';
             completeArea.querySelector('.complete-title').innerText = "🎉 3個達成！1つ目の景品ゲット！ 🎁";
-            completeMessage.innerHTML = "電算機部で1つ目の景品をもらってね！次は9個でさらに景品追加！";
+            completeMessage.innerHTML = "電算機部で景品をもらってね！次は9個でさらに景品追加！";
         } else {
             // 0〜2個のとき
             counterLabel.innerText = "景品獲得まで";
